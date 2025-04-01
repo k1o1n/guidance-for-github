@@ -1,0 +1,32 @@
+概念：
+    仓库：一个仓库可以管理非常多的文件
+        分支(branch)：一个分支代表当前仓库的一个历史版本。换句话来说，一个仓库可以拥有很多个分支
+    映射仓库：一个仓库在另外一个仓库存储的形式
+
+映射仓库存在的意义是为了两个仓库之间的交互工作
+简单的来讲，一个仓库R1可以访问另外一个仓库R2，当且仅当R1中建立了R2的映射仓库r2
+换句话来讲，如果R1中有r2，那么R1就可以使用r2作为中转站来管理R2。需要注意的是，这个管理是单向的，也就是说R2不能通过r2来管理R1。R2只有建立了R1在R2的映射r1，才可以管理R1的内容
+为了方便区分，本地仓库自己的分支称为本地分支，映射仓库中的分支称为远程分支
+
+管理：
+现在假设有两个仓库R1、R2。R1有R1branch一个分支，R2有R2branch一个分支。R1建立了R2的映射库r2
+若R1想要管理R2的内容，操作的流程如下：
+R1获取R2的某个分支的内容：R2branch被拷贝到r2中，r2的一个同名分支r2/R2branch接受拷贝内容，这个过程会覆盖掉r2/R2branch原来的内容
+    注意：远程分支中的内容不能被直接修改，只有执行本操作的时候才能发生修改
+合并分支：如果R1的R1branch分支想要访问r2/R2branch，它会通过某种规则将两个分支的内容合并
+提交更改：R1尝试将R1branch提交到R2中，R2将提交的内容进行修改
+    注意：本地分支可以提交更改，当且仅当它与提交处建立了一一匹配关系
+        简单来说：R1branch必须与R2中的某个分支(当然此处只能是R2branch)匹配上了，才可以提交。这样在将R1branch提交到R2后，R2会将R1branch的自动匹配到R2branch，并且覆盖R2branch
+
+vpn设置：
+git config --global http.proxy socks5h://127.0.0.1:port
+git config --global https.proxy socks5h://127.0.0.1:port
+port为clash设置的端口，注意连接节点是否正常
+
+取消代理：
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+
+查看代理：
+git config --global --get http.proxy
+git config --global --get https.proxy
